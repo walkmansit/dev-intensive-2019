@@ -1,6 +1,6 @@
 package ru.skillbranch.devintensive.extensions
 
-import ru.skillbranch.devintensive.utils.Utils
+import ru.skillbranch.devintensive.Utils.Utils
 import ru.skillbranch.devintensive.models.User
 import ru.skillbranch.devintensive.models.UserView
 
@@ -13,7 +13,7 @@ fun User.toUserView() : UserView
         when {
             lastVisit == null -> "not appeared"
             isOnline -> "online"
-            else -> lastVisit.humanizeDiff()
+            else -> lastVisit?.humanizeDiff()
         }
 
     return UserView(
