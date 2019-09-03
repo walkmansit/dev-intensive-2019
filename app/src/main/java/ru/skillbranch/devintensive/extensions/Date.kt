@@ -29,18 +29,6 @@ fun Date.add(value:Int, unit:TimeUnits = TimeUnits.SECOND): Date {
     return this
 }
 
-/*
-0с - 1с "только что"
-1с - 45с "несколько секунд назад"
-45с - 75с "минуту назад"
-75с - 45мин "N минут назад"
-45мин - 75мин "час назад"
-75мин 22ч "N часов назад"
-22ч - 26ч "день назад"
-
-26ч - 360д "N дней назад"
->360д "более года назад"
-*/
 fun Date.humanizeDiff():String {
 
     fun getRoundedUnit(ticks:Long, unit:TimeUnits):Long{
@@ -73,9 +61,9 @@ fun Date.humanizeDiff():String {
 
     val diffDate = Date().time - time //разница в тиках, >0 - назад, <0 - через
 
-    val (base,appendDrection) = getBase(diffDate)
+    val (base,appendDirection) = getBase(diffDate)
 
-    return if (appendDrection)  if (diffDate > 0L) "$base назад" else "через $base" else base
+    return if (appendDirection)  if (diffDate > 0L) "$base назад" else "через $base" else base
 }
 
 enum class TimeUnits {
