@@ -1,5 +1,6 @@
 package ru.skillbranch.devintensive.extensions
 
+import android.annotation.SuppressLint
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.abs
@@ -70,18 +71,20 @@ enum class TimeUnits {
     SECOND,
     MINUTE,
     HOUR,
-    DAY
-}
+    DAY;
 
-fun TimeUnits.plural(value:Int):String{
-    return when(this)
-    {
-        TimeUnits.SECOND -> "$value ${pluralForm(value,"секунду","секунды","секунд")}"
-        TimeUnits.MINUTE -> "$value ${pluralForm(value,"минуту","минуты","минут")}"
-        TimeUnits.HOUR -> "$value ${pluralForm(value,"час","часа","часов")}"
-        TimeUnits.DAY -> "$value ${pluralForm(value,"день","дня","дней")}"
+    fun plural(value:Int):String{
+        return when(this)
+        {
+            SECOND -> "$value ${pluralForm(value,"секунду","секунды","секунд")}"
+            MINUTE -> "$value ${pluralForm(value,"минуту","минуты","минут")}"
+            HOUR -> "$value ${pluralForm(value,"час","часа","часов")}"
+            DAY -> "$value ${pluralForm(value,"день","дня","дней")}"
+        }
     }
 }
+
+
 
 private fun pluralForm(value:Int,form1:String,form2:String,form5:String):String{
     val n = abs(value) % 100
