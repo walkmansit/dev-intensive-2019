@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEdito
     }
 
     private fun handleSubmit(){
-        val (phase, color) =  bender.listerAnswer(messageEd.text.toString().toLowerCase())
+        val (phase, color) =  bender.listerAnswer(messageEd.text.toString())
         messageEd.setText("")
         val (r,g,b) = color
 
