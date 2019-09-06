@@ -16,8 +16,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.skillbranch.devintensive.extensions.hideKeyboard
-import ru.skillbranch.devintensive.extensions.isKeyboardClosed
-import ru.skillbranch.devintensive.extensions.isKeyboardOpen
 import ru.skillbranch.devintensive.models.Bender
 
 private const val BUNDLE_STATUS_KEY = "STATUS"
@@ -45,7 +43,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEdito
         sendBtn.setOnClickListener(this)
         messageEd.setOnEditorActionListener() { v, actionId, event ->
             when(actionId){
-            EditorInfo.IME_ACTION_DONE -> { handleSubmit(); true }
+            EditorInfo.IME_ACTION_DONE -> { handleSubmit(); hideKeyboard();true }
             else -> false
         }
         }
@@ -105,7 +103,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEdito
 
         benderImage.setColorFilter(Color.rgb(r,g,b),PorterDuff.Mode.MULTIPLY)
         textTv.text = phase
-        hideKeyboard()
     }
 
     override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
