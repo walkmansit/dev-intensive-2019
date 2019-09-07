@@ -12,9 +12,6 @@ class Bender (var status:Status = Status.NORMAL, var question:Question = Questio
     }
 
     fun listerAnswer(answer:String) : Pair<String, Triple<Int, Int, Int>>{
-
-        if (question == Question.IDLE) return "Отлично - ты справился" to status.color
-
         val (isValid,message) = question.validate(answer)
         if (isValid)
             if (question.answers.contains(answer.toLowerCase())){
@@ -23,7 +20,9 @@ class Bender (var status:Status = Status.NORMAL, var question:Question = Questio
             }
             else{
                 status = status.nextStatus()
-                return "Это неправильный ответ\n${question.question}" to status.color
+                return if(status == Status.NORMAL)
+                    "Это неправильный ответ. Давай все по новой\n${question.question}" to status.color
+                else "Это неправильный ответ\n${question.question}" to status.color
             }
         else
             return "${message}\n${question.question}" to status.color
@@ -93,7 +92,7 @@ class Bender (var status:Status = Status.NORMAL, var question:Question = Questio
                 return false to "Отлично - ты справился"
             }
 
-            override fun nextQuestion(): Question  = IDLE
+            override fun nextQuestion(): Question  = NAME
         };
 
         abstract fun nextQuestion() : Question

@@ -16,6 +16,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.skillbranch.devintensive.extensions.hideKeyboard
+import ru.skillbranch.devintensive.extensions.isKeyboardOpen
 import ru.skillbranch.devintensive.models.Bender
 
 private const val BUNDLE_STATUS_KEY = "STATUS"
@@ -43,7 +44,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEdito
         sendBtn.setOnClickListener(this)
         messageEd.setOnEditorActionListener() { v, actionId, event ->
             when(actionId){
-            EditorInfo.IME_ACTION_DONE -> { handleSubmit(); hideKeyboard();true }
+            EditorInfo.IME_ACTION_DONE -> { handleSubmit(); true }
             else -> false
         }
         }
@@ -58,6 +59,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEdito
         textTv.text = bender.askQuestion()
         val (r,g,b) = bender.status.color
         benderImage.setColorFilter(Color.rgb(r,g,b),PorterDuff.Mode.MULTIPLY)
+
+        val isOpen = isKeyboardOpen()
     }
 
     override fun onStart() {
@@ -103,6 +106,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEdito
 
         benderImage.setColorFilter(Color.rgb(r,g,b),PorterDuff.Mode.MULTIPLY)
         textTv.text = phase
+
+        hideKeyboard()
     }
 
     override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
@@ -118,5 +123,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEdito
         outState?.putString(BUNDLE_QUESTION_KEY,bender.question.name)
         outState?.putString(BUNDLE_INPUT_KEY,messageEd.text.toString())
         Log.d("M_MainActivity","onSaveInstanceState")
+        super.onSaveInstanceState(outState, outPersistentState)
     }
 }
