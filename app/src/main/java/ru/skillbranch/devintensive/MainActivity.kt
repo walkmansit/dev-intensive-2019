@@ -118,11 +118,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEdito
         return false
     }
 
-    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+    override fun onSaveInstanceState(outState: Bundle?) {
         outState?.putString(BUNDLE_STATUS_KEY,bender.status.name)
         outState?.putString(BUNDLE_QUESTION_KEY,bender.question.name)
         outState?.putString(BUNDLE_INPUT_KEY,messageEd.text.toString())
         Log.d("M_MainActivity","onSaveInstanceState")
-        super.onSaveInstanceState(outState, outPersistentState)
+        super.onSaveInstanceState(outState)
     }
 }
