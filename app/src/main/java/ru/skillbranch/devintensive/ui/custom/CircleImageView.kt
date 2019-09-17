@@ -17,7 +17,7 @@ class CircleImageView @JvmOverloads constructor (
     defStyleAttr:Int = 0
 ) : ImageView(context,attrs, defStyleAttr){
 
-    companion object{
+    /*companion object{
         private const val DEFAULT_AVATAR = ru.skillbranch.devintensive.R.drawable.avatar_default
 
         private const val DEFAULT_BORDER_COLOR = Color.WHITE
@@ -111,7 +111,7 @@ class CircleImageView @JvmOverloads constructor (
         setMeasuredDimension(width, height)
     }
 
-    /*private fun resetDrawable(){
+    *//*private fun resetDrawable(){
 
         val roundBitmapDrawable = RoundedBitmapDrawableFactory.create(resources,drawable.toBitmap())
         roundBitmapDrawable.isCircular = true
@@ -122,7 +122,7 @@ class CircleImageView @JvmOverloads constructor (
         setImageDrawable(roundBitmapDrawable)
         setBackgroundColor(borderColor)
         setPadding(borderWidth,borderWidth,borderWidth,borderWidth)
-    }*/
+    }*//*
 
 
     @Dimension
@@ -135,9 +135,9 @@ class CircleImageView @JvmOverloads constructor (
 
     public fun  getBorderColor():Int = borderColor
 
-    /*public fun  setBorderColor(hex:String){
+    *//*public fun  setBorderColor(hex:String){
         borderColor =
-    }*/
+    }*//*
 
 
     public fun  setBorderColor(@ColorRes colorId: Int){
@@ -175,6 +175,6 @@ class CircleImageView @JvmOverloads constructor (
         }
 
         return result + 2
-    }
+    }*/
 
 }
