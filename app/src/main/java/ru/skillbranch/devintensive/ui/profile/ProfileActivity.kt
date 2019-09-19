@@ -5,14 +5,18 @@ import android.graphics.ColorFilter
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 
 import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.activity_profile_constraint.*
 import kotlinx.android.synthetic.main.activity_profile_constraint.tv_rank
@@ -21,21 +25,28 @@ import ru.skillbranch.devintensive.extensions.hideKeyboard
 import ru.skillbranch.devintensive.extensions.isKeyboardOpen
 import ru.skillbranch.devintensive.models.Bender
 import ru.skillbranch.devintensive.models.Profile
+import ru.skillbranch.devintensive.repositories.PreferencesRepository
 import ru.skillbranch.devintensive.viewmodels.ProfileViewModel
 
-class ProfileActivity : AppCompatActivity() {
+class ProfileActivity : AppCompatActivity() , TextWatcher {
 
     companion object{
         const val IS_EDIT_MODE = "IS_EDIT_MODE"
     }
 
-    var isEditMode = false
+    private var isEditMode = false
+    private var isRepoValid = true
 
-    lateinit var viewFields : Map<String, TextView>
+    private lateinit var viewFields : Map<String, TextView>
+    private lateinit var viewWrappers : Map<String, TextInputLayout> //for validate errors
+
     private  lateinit var profileViewModel : ProfileViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        //TODO set theme
+        setTheme(R.style.AppTheme)
+        PreferencesRepository.getAppTheme().also {
+            AppCompatDelegate.setDefaultNightMode(it)
+        }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile_constraint)
 
@@ -60,8 +71,20 @@ class ProfileActivity : AppCompatActivity() {
             "respect" to tv_respect
         )
 
+        viewWrappers = mapOf(
+            "firstNameValid" to wr_first_name,
+            "lastNameValid" to wr_last_name,
+            "aboutValid" to wr_about,
+            "repositoryValid" to wr_repository
+        )
+
+
         btn_edit.setOnClickListener(View.OnClickListener {
-            if (isEditMode) saveProfileInfo()
+            if (isEditMode)
+            {
+                if (!isRepoValid) et_repository.text = null
+                saveProfileInfo()
+            }
 
             isEditMode = !isEditMode
             showCurrentMode(isEditMode)
@@ -71,6 +94,7 @@ class ProfileActivity : AppCompatActivity() {
             profileViewModel.switchTheme()
         })
 
+        et_repository.addTextChangedListener(this)
     }
 
     private fun showCurrentMode(editMode: Boolean) {
@@ -122,11 +146,23 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun updateUI( profile: Profile) {
         profile.toMap().also {
-            for ((k,v) in viewFields){
+            for ((k, v) in viewFields) {
                 if (it.containsKey(k))
                     v.text = it[k].toString()
             }
         }
+
+        /*profile.toValidateMap().also {
+            for ((k, v) in viewWrappers) {
+                if (it.containsKey(k)) {
+                    if (it[k]!!) {
+                        v.error = profile.toValidateErrors()[k]
+                    } else
+                        v.error = null
+
+                }
+            }
+        }*/
     }
 
     private fun saveProfileInfo(){
@@ -138,6 +174,46 @@ class ProfileActivity : AppCompatActivity() {
         ).apply {
             profileViewModel.saveProfileDate(this)
         }
+
+    }
+
+    private val repoExcludeWords = listOf(
+        "enterprise",
+        "features",
+        "topics",
+        "collections",
+        "trending",
+        "events",
+        "marketplace",
+        "pricing",
+        "nonprofit",
+        "customer-stories",
+        "security",
+        "login",
+        "join"
+    )
+
+    fun validateRepository(repository:String) : Boolean{
+        if (repository.isEmpty()) return true
+        else{
+            val pattern = "(https://)?(www.)?github.com/(\\w+)".toRegex()
+            val result = pattern.matchEntire(repository)
+            if (result != null)
+                return !(repoExcludeWords.contains(result?.groupValues?.last()))
+            else return  false
+        }
+    }
+
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+    }
+
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        isRepoValid = validateRepository(s.toString())
+        wr_repository.error = if (!isRepoValid) "Невалидный адрес репозитория" else ""
+    }
+
+    override fun afterTextChanged(s: Editable?) {
 
     }
 }

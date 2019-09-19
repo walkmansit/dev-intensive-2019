@@ -31,12 +31,14 @@
             app:layout_constraintEnd_toStartOf="@+id/iv_avatar"
             app:layout_constraintTop_toTopOf="@+id/iv_avatar" />
 
-    <ImageView
+    <ru.skillbranch.devintensive.ui.custom.CircleImageView
             android:id="@+id/iv_avatar"
             android:layout_width="@dimen/avatar_round_size"
             android:layout_height="@dimen/avatar_round_size"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
+            app:cv_borderColor="@color/color_accent"
+            app:cv_borderWidth="1dp"
             android:src="@drawable/avatar_default"
             app:layout_constraintBottom_toTopOf="@+id/tv_nick_name"
             app:layout_constraintEnd_toEndOf="parent"
@@ -165,7 +167,7 @@
             app:layout_constraintTop_toBottomOf="@+id/view" />
 
     <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout2"
+            android:id="@+id/wr_first_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -184,13 +186,13 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout3"
+            android:id="@+id/wr_last_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/textInputLayout2"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
+            app:layout_constraintStart_toStartOf="@+id/wr_first_name"
+            app:layout_constraintTop_toBottomOf="@+id/wr_first_name">
 
         <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_last_name"
@@ -210,7 +212,7 @@
             android:background="?attr/colorDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout3" />
+            app:layout_constraintTop_toBottomOf="@+id/wr_last_name" />
 
     <ImageView
             android:id="@+id/ic_repo"

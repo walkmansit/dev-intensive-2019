@@ -20,34 +20,11 @@ object Utils {
     }
 
     fun transliteration(payload:String, divider:String = " "):String {
-
-        fun translitWord(word:String?):String{
-
-            if (word.isNullOrEmpty()) return ""
-            else {
-                val sb = StringBuilder()
-
-                for (letter in word) {
-
-                    if (transliteralMap.containsKey(letter)) {
-                        sb.append(transliteralMap[letter])
-                    }
-                    else
-                        sb.append(letter)
-
-                }
-
-                return sb.toString()
-            }
+        val sb = StringBuilder()
+        for(ch in payload.replace(" ",divider)){
+            sb.append( if (transliteralMap.containsKey(ch)) transliteralMap[ch] else ch)
         }
-
-        val parts:List<String> = payload.split(" ")
-
-        var first = translitWord(parts.getOrNull(0))
-        val second = translitWord(parts.getOrNull(1))
-
-        return if(second.isNullOrEmpty()) first else "$first$divider$second"
-
+        return  sb.toString()
     }
 
     private val transliteralMap : Map<Char,String> = mapOf(
