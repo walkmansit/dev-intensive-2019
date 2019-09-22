@@ -1,6 +1,5 @@
 package ru.skillbranch.devintensive.extensions
 
-import android.annotation.SuppressLint
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.abs
@@ -49,15 +48,14 @@ fun Date.humanizeDiff():String {
             abs == 0L || abs == SECOND -> "только что" to false
             abs > SECOND && abs <= 45*SECOND -> "несколько секунд" to true
             abs > 45*SECOND && abs <= 75*SECOND -> "минуту" to true
-            abs > 75*SECOND && abs <= 45*MINUTE  -> "${TimeUnits.MINUTE.plural(getRoundedUnit(abs,TimeUnits.MINUTE).toInt())}" to true
+            abs > 75*SECOND && abs <= 45*MINUTE  -> TimeUnits.MINUTE.plural(getRoundedUnit(abs,TimeUnits.MINUTE).toInt()) to true
             abs > 45*MINUTE && abs <= 75*MINUTE -> "час" to true
-            abs > 75*MINUTE && abs <= 22*HOUR  -> "${TimeUnits.HOUR.plural(getRoundedUnit(abs,TimeUnits.HOUR).toInt())}" to true
+            abs > 75*MINUTE && abs <= 22*HOUR  -> TimeUnits.HOUR.plural(getRoundedUnit(abs,TimeUnits.HOUR).toInt()) to true
             abs > 22* HOUR && abs <= 26* HOUR -> "день" to true
-            abs > 26* HOUR && abs <= 360*DAY -> "${TimeUnits.DAY.plural(getRoundedUnit(abs,TimeUnits.DAY).toInt())}" to true
+            abs > 26* HOUR && abs <= 360*DAY -> TimeUnits.DAY.plural(getRoundedUnit(abs,TimeUnits.DAY).toInt()) to true
             else -> if (ticks > 0L) "более года назад" to false else "более чем через год" to false
 
         }
-        return "" to false
     }
 
     val diffDate = Date().time - time //разница в тиках, >0 - назад, <0 - через
