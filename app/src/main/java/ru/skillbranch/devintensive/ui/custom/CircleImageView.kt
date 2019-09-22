@@ -3,29 +3,33 @@ package ru.skillbranch.devintensive.ui.custom
 
 import android.content.Context
 import android.graphics.*
+import android.graphics.Color.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
+import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewOutlineProvider
 import android.widget.ImageView
-import androidx.annotation.ColorInt
-import androidx.annotation.ColorRes
-import androidx.annotation.DrawableRes
-import androidx.annotation.RequiresApi
+import androidx.annotation.*
 import androidx.appcompat.widget.AppCompatImageView
-
 import ru.skillbranch.devintensive.R
 
+
+import kotlin.math.roundToInt
+
+
+//https://gist.github.com/harshvishu/3acf963c9f35c1a0830cdba54659d49c
 class CircleImageView : AppCompatImageView {
 
     private val mDrawableRect = RectF()
     private val mBorderRect = RectF()
 
     private val mShaderMatrix = Matrix()
+    private val mTextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
     private val mBitmapPaint = Paint()
     private val mBorderPaint = Paint()
     private val mCircleBackgroundPaint = Paint()
@@ -34,6 +38,7 @@ class CircleImageView : AppCompatImageView {
     private var mBorderWidth = DEFAULT_BORDER_WIDTH
     private var mCircleBackgroundColor = DEFAULT_CIRCLE_BACKGROUND_COLOR
 
+    private var mText : String? = null
     private var mBitmap: Bitmap? = null
     private var mBitmapShader: BitmapShader? = null
     private var mBitmapWidth: Int = 0
@@ -57,7 +62,26 @@ class CircleImageView : AppCompatImageView {
             initializeBitmap()
         }
 
-    var borderColor: Int
+    fun getBorderColor():Int = mBorderColor
+
+    fun setBorderColor(@ColorRes colorId: Int){
+        if (mBorderColor != colorId){
+            mBorderColor = colorId
+            mBorderPaint.color = mBorderColor
+            invalidate()
+        }
+    }
+
+    fun setBorderColor(hex:String){
+        val colorId = parseColor(hex)
+        if (mBorderColor != colorId){
+            mBorderColor = colorId
+            mBorderPaint.color = mBorderColor
+            invalidate()
+        }
+    }
+
+    /*var borderColor: Int
         get() = mBorderColor
         set(@ColorInt borderColor) {
             if (borderColor == mBorderColor) {
@@ -67,7 +91,7 @@ class CircleImageView : AppCompatImageView {
             mBorderColor = borderColor
             mBorderPaint.color = mBorderColor
             invalidate()
-        }
+        }*/
 
     var circleBackgroundColor: Int
         get() = mCircleBackgroundColor
@@ -98,7 +122,7 @@ class CircleImageView : AppCompatImageView {
             circleBackgroundColor = fillColor
         }
 
-    var borderWidth: Int
+    /*var borderWidth: Int
         get() = mBorderWidth
         set(borderWidth) {
             if (borderWidth == mBorderWidth) {
@@ -107,7 +131,23 @@ class CircleImageView : AppCompatImageView {
 
             mBorderWidth = borderWidth
             setup()
+        }*/
+
+    @Dimension
+    fun  getBorderWidth():Int = mBorderWidth
+
+    fun setBorderWidth(@Dimension dp:Int){
+        if (dp != mBorderWidth){
+            mBorderWidth = dp
+            setup()
         }
+    }
+    fun setText(text:String){
+        if (text != mText){
+            mText = text
+            invalidate()
+        }
+    }
 
     var isBorderOverlay: Boolean
         get() = mBorderOverlay
@@ -188,13 +228,29 @@ class CircleImageView : AppCompatImageView {
             return
         }
 
-        if (mCircleBackgroundColor != Color.TRANSPARENT) {
-            canvas.drawCircle(mDrawableRect.centerX(), mDrawableRect.centerY(), mDrawableRadius, mCircleBackgroundPaint)
-        }
-        canvas.drawCircle(mDrawableRect.centerX(), mDrawableRect.centerY(), mDrawableRadius, mBitmapPaint)
+
         if (mBorderWidth > 0) {
             canvas.drawCircle(mBorderRect.centerX(), mBorderRect.centerY(), mBorderRadius, mBorderPaint)
         }
+
+        if (mCircleBackgroundColor != TRANSPARENT) {
+            canvas.drawCircle(mDrawableRect.centerX(), mDrawableRect.centerY(), mDrawableRadius, mCircleBackgroundPaint)
+        }
+
+        if (mText != null) {
+            val textWidth = mTextPaint.measureText (mText) * 0.5f
+            val textBaseLineHeight = mTextPaint.fontMetrics.ascent * -0.4f
+
+            val centerX = (width * 0.5f).roundToInt()
+            val centerY = (height * 0.5f).roundToInt()
+            canvas.drawText(mText!!, centerX - textWidth, centerY + textBaseLineHeight, mTextPaint)
+
+        }
+        else{
+
+            canvas.drawCircle(mDrawableRect.centerX(), mDrawableRect.centerY(), mDrawableRadius, mBitmapPaint)
+        }
+
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -215,7 +271,7 @@ class CircleImageView : AppCompatImageView {
     @Suppress("MemberVisibilityCanBePrivate")
     @Deprecated("Use {@link #setBorderColor(int)} instead", ReplaceWith("borderColor = context.resources.getColor(borderColorRes)"))
     fun setBorderColorResource(@ColorRes borderColorRes: Int) {
-        borderColor = context.resources.getColor(borderColorRes)
+        mBorderColor = context.resources.getColor(borderColorRes)
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
@@ -286,7 +342,7 @@ class CircleImageView : AppCompatImageView {
             val bitmap: Bitmap
 
             if (drawable is ColorDrawable) {
-                bitmap = Bitmap.createBitmap(COLORDRAWABLE_DIMENSION, COLORDRAWABLE_DIMENSION, BITMAP_CONFIG)
+                bitmap = Bitmap.createBitmap(COLOR_DRAWABLE_DIMENSION, COLOR_DRAWABLE_DIMENSION, BITMAP_CONFIG)
             } else {
                 bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, BITMAP_CONFIG)
             }
@@ -335,6 +391,9 @@ class CircleImageView : AppCompatImageView {
         mBorderPaint.isAntiAlias = true
         mBorderPaint.color = mBorderColor
         mBorderPaint.strokeWidth = mBorderWidth.toFloat()
+
+        mTextPaint.textSize = 16f * resources.displayMetrics.scaledDensity
+        mTextPaint.color = WHITE
 
         mCircleBackgroundPaint.style = Paint.Style.FILL
         mCircleBackgroundPaint.isAntiAlias = true
@@ -403,14 +462,14 @@ class CircleImageView : AppCompatImageView {
 
     companion object {
 
-        private val SCALE_TYPE = ImageView.ScaleType.CENTER_CROP
+        private val SCALE_TYPE = ScaleType.CENTER_CROP
 
         private val BITMAP_CONFIG = Bitmap.Config.ARGB_8888
-        private const val COLORDRAWABLE_DIMENSION = 2
+        private const val COLOR_DRAWABLE_DIMENSION = 2
 
         private const val DEFAULT_BORDER_WIDTH = 0
-        private const val DEFAULT_BORDER_COLOR = Color.BLACK
-        private const val DEFAULT_CIRCLE_BACKGROUND_COLOR = Color.TRANSPARENT
+        private const val DEFAULT_BORDER_COLOR = BLACK
+        private const val DEFAULT_CIRCLE_BACKGROUND_COLOR = R.attr.colorAccent
         private const val DEFAULT_BORDER_OVERLAY = false
     }
 

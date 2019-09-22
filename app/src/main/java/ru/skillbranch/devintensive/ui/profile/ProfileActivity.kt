@@ -1,13 +1,14 @@
 package ru.skillbranch.devintensive.ui.profile
 
 
+import android.graphics.BitmapFactory
 import android.graphics.ColorFilter
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-
+import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.widget.EditText
@@ -17,13 +18,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.textfield.TextInputLayout
-import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.activity_profile_constraint.*
-import kotlinx.android.synthetic.main.activity_profile_constraint.tv_rank
 import ru.skillbranch.devintensive.R
-import ru.skillbranch.devintensive.extensions.hideKeyboard
-import ru.skillbranch.devintensive.extensions.isKeyboardOpen
-import ru.skillbranch.devintensive.models.Bender
 import ru.skillbranch.devintensive.models.Profile
 import ru.skillbranch.devintensive.repositories.PreferencesRepository
 import ru.skillbranch.devintensive.viewmodels.ProfileViewModel
@@ -54,6 +50,27 @@ class ProfileActivity : AppCompatActivity() , TextWatcher {
         initViewModel()
 
         Log.d("ProfileActivity","onCreate")
+    }
+
+    private  fun setAvatarTextImage(text:String){
+        val imageBytes = Base64.decode(text, 0)
+        val image = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+
+        iv_avatar.setImageBitmap(image)
+    }
+
+    private fun trySetNicknameToAvatar(profile: Profile){
+        val sb = StringBuilder()
+
+        if (profile.firstName.isNotEmpty())
+            sb.append(profile.firstName.first().toUpperCase())
+        if (profile.lastName.isNotEmpty())
+            sb.append(profile.lastName.first().toUpperCase())
+
+        val initials = sb.toString()
+        if (initials.isNotEmpty())
+           iv_avatar.setText(initials)
+
     }
 
     private fun initViews(savedInstanceState: Bundle?) {
@@ -145,6 +162,8 @@ class ProfileActivity : AppCompatActivity() , TextWatcher {
     }
 
     private fun updateUI( profile: Profile) {
+        trySetNicknameToAvatar(profile)
+
         profile.toMap().also {
             for ((k, v) in viewFields) {
                 if (it.containsKey(k))
