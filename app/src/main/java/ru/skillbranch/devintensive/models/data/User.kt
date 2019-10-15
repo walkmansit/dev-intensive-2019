@@ -1,5 +1,6 @@
-package ru.skillbranch.devintensive.models
+package ru.skillbranch.devintensive.models.data
 
+import ru.skillbranch.devintensive.extensions.humanizeDiff
 import ru.skillbranch.devintensive.utils.Utils
 import java.util.*
 
@@ -10,8 +11,8 @@ data class User (
     var avatar : String?,
     var rating : Int = 0,
     var respect : Int = 0,
-    var lastVisit : Date? = Date(),
-    var isOnline : Boolean = false
+    val lastVisit : Date? = Date(),
+    val isOnline : Boolean = false
 ) {
     constructor(id: String,firstName:String?,lastName:String?):this(id,firstName,lastName,null)
 
@@ -35,6 +36,24 @@ data class User (
         """.trimIndent())
     }
 
+    fun toUserItem(): UserItem {
+        val lastActivity = when {
+            lastVisit == null -> "Еще ни разу не заходил"
+            isOnline -> "online"
+            else -> "Последний раз был ${lastVisit.humanizeDiff()}"
+        }
+
+        return UserItem(
+            id,
+            "${firstName.orEmpty()} ${lastName.orEmpty()}",
+            Utils.toInitials(firstName,lastName),
+            avatar,
+            lastActivity,
+            false,
+            isOnline
+         )
+    }
+
     class Builder {
         lateinit var id : String
         var firstName : String? = null
@@ -53,7 +72,16 @@ data class User (
         fun respect(n:Int) = apply { respect = n  }
         fun lastVisit(d:Date?) = apply { lastVisit = d }
         fun isOnline(b:Boolean) = apply { isOnline = b }
-        fun build() = User(id ?: error("field id required"),firstName,lastName,avatar,rating,respect,lastVisit,isOnline)
+        fun build() = User(
+            id ?: error("field id required"),
+            firstName,
+            lastName,
+            avatar,
+            rating,
+            respect,
+            lastVisit,
+            isOnline
+        )
     }
 
     companion object Factory{
@@ -66,7 +94,11 @@ data class User (
 
             val (firstName,lastName) = Utils.parseFullName(fullName)
 
-            return User("$lastId",firstName,lastName)
+            return User(
+                "$lastId",
+                firstName,
+                lastName
+            )
         }
     }
 }

@@ -13,10 +13,10 @@ object Utils {
     }
 
     fun toInitials(firstName:String?, lastName:String?) : String? {
-        var result = "${firstName?.trim()?.getOrNull(0)?.toUpperCase() ?: ""}" +
+        val result = "${firstName?.trim()?.getOrNull(0)?.toUpperCase() ?: ""}" +
                 "${lastName?.trim()?.getOrNull(0)?.toUpperCase() ?: ""}"
 
-        return if (result.isNullOrEmpty()) null else result
+        return if (result.isEmpty()) null else result
     }
 
     fun transliteration(payload:String, divider:String = " "):String {

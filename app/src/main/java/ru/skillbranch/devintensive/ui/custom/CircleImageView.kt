@@ -142,7 +142,7 @@ class CircleImageView : AppCompatImageView {
             setup()
         }
     }
-    fun setText(text:String){
+    fun setInitials(text:String){
         if (text != mText){
             mText = text
             invalidate()

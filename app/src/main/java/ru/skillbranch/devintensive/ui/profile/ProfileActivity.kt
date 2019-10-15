@@ -69,7 +69,7 @@ class ProfileActivity : AppCompatActivity() , TextWatcher {
 
         val initials = sb.toString()
         if (initials.isNotEmpty())
-           iv_avatar.setText(initials)
+           iv_avatar.setInitials(initials)
 
     }
 
@@ -139,6 +139,7 @@ class ProfileActivity : AppCompatActivity() , TextWatcher {
 
             val icon  = if(editMode) resources.getDrawable(R.drawable.ic_save_black_24dp, theme)
             else resources.getDrawable(R.drawable.ic_edit_black_24dp, theme)
+
 
             background.colorFilter = filter
 
