@@ -46,7 +46,7 @@ class MainViewModel : ViewModel() {
         chatRepository.update(chat.copy(isArchived = true))
     }
 
-    fun restoreFromArchieve(chatId : String){
+    fun restoreFromArchive(chatId : String){
 
     }
 

@@ -14,7 +14,7 @@ import ru.skillbranch.devintensive.models.data.UserItem
 
 class UserAdapter(val listener: (UserItem)  -> Unit) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
-    private  var items: List<UserItem>  = listOf()
+    var items: List<UserItem>  = listOf()
 
     fun updateData(data : List<UserItem>){
         val diffCallback = object:  DiffUtil.Callback(){
